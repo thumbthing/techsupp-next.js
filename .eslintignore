@@ -1,0 +1,9 @@
+/.next
+/node_modules
+.eslintrc.json
+.prettierrc.json
+package.json
+next.config.js
+README.md
+yarn.lock
+*.css
