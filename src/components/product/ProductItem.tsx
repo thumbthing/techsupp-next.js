@@ -6,33 +6,38 @@ import productImage from '@/util/product/product.image';
 import styled from 'styled-components';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import ProductType from '@/types/product.type';
 
-function ProductItem() {
+interface ProductItemProps {
+  product: ProductType;
+}
+
+function ProductItem({ product }: ProductItemProps) {
+  const { _id, name, category, date, invest_price } = product;
+
+  console.log(product);
+
   const productPath = usePathname();
-  const imagePath = productImage('camera');
   const detailPath = `${productPath}/detail`;
+  const imagePath = productImage(`${category}`);
 
   return (
     <StyledLink
       href={{
         pathname: `${detailPath}/[id]`,
-        query: { id: 1 },
+        query: { id: _id },
       }}
     >
       <ProductBox>
         <ImageBox>
-          <Image src={imagePath} alt={'asdf'} width={150} height={150} />
-          {/* category */}
+          <Image src={imagePath} alt={category} width={150} height={150} />
         </ImageBox>
         <div>
           <div>
-            <Text>제품명</Text>
-            {/* name */}
+            <Text>{name}</Text>
             <div>
-              <Text>투자 마감일: </Text>
-              {/* date */}
-              <Text>개인 투자 금액: </Text>
-              {/* invest_price */}
+              <Text>{`D-day: ${date}`}</Text>
+              <Text>{`개인 투자 금액: ${invest_price}`}</Text>
             </div>
             <div>
               <Text>투자율: </Text>
