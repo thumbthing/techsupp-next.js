@@ -7,8 +7,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
       await dbConnect();
       const data = await Product.find({});
-      console.log('data', data);
-      console.log('json', res.status(200).json(data));
 
       return res.status(200).json(data);
     } catch (error) {
