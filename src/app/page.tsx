@@ -3,6 +3,8 @@ import styles from './page.module.css';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
+require('dotenv').config();
+
 export default function Home() {
   const path = {
     product: 'product',
