@@ -6,12 +6,18 @@ interface productProps {
   productList: ProductType[];
   singleProduct: ProductType | undefined;
   filteredProductList: ProductType[];
+  pageIndex: number;
+  pageList: number[];
+  pageScope: number;
 }
 
 const initialState: productProps = {
   productList: [],
   singleProduct: undefined,
   filteredProductList: [],
+  pageIndex: 0,
+  pageList: [],
+  pageScope: 0,
 };
 
 export const productSlice = createSlice({
@@ -33,9 +39,29 @@ export const productSlice = createSlice({
     removeSingleProduct: (draftState) => {
       draftState.singleProduct = undefined;
     },
+    setPageIndex: (draftState, action: PayloadAction<number>) => {
+      const index = action.payload;
+      draftState.pageIndex = index;
+    },
+    setPageList: (draftState, action: PayloadAction<number[]>) => {
+      const pageList = action.payload;
+      draftState.pageList = pageList;
+    },
+    setPageScope: (draftState, action: PayloadAction<number>) => {
+      const scope = action.payload;
+      draftState.pageScope = scope;
+    },
   },
 });
 
-export const { getProductList, getFilteredProductList, getSingleProduct, removeSingleProduct } = productSlice.actions;
+export const {
+  getProductList,
+  getFilteredProductList,
+  getSingleProduct,
+  removeSingleProduct,
+  setPageIndex,
+  setPageList,
+  setPageScope,
+} = productSlice.actions;
 
 export default productSlice.reducer;
