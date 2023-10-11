@@ -15,6 +15,7 @@ function ProductPageList() {
   const filteredList = useSelector((state: RootState) => state.product.filteredProductList);
   const pageList = useSelector((state: RootState) => state.product.pageList);
   const pageScope = useSelector((state: RootState) => state.product.pageScope);
+  const pageIndex = useSelector((state: RootState) => state.product.pageIndex);
 
   const prevScope = pageScope - 1 >= 0 ? pageScope - 1 : 0;
   const nextScope = pageScope + 1 < Math.ceil(filteredList.length / 50) ? pageScope + 1 : pageScope;
@@ -31,29 +32,26 @@ function ProductPageList() {
 
     const filteredPageList = getPages(filteredList);
     dispatch(setPageList(filteredPageList));
+    dispatch(setPageIndex(Number(router.query.page)));
     dispatch(setPageScope(Number(router.query.scope)));
   }, [filteredList, dispatch, router]);
 
   const changePage = (pageNumber: number) => {
-    const index = pageNumber * 5;
-    dispatch(setPageIndex(index));
+    router.push(`/product?scope=${pageScope}&page=${pageNumber}`);
   };
 
   const decreaseScope = () => {
     const prevPageIndex = prevScope * 50;
     dispatch(setPageIndex(prevPageIndex));
-    router.push(`/product?scope=${prevScope}`);
+    const firstPageOfScope = prevScope * 10;
+    router.push(`/product?scope=${prevScope}&page=${firstPageOfScope}`);
   };
 
-  const increaseScope = async () => {
-    try {
-      const nextPageIndex = nextScope * 50;
-      dispatch(setPageIndex(nextPageIndex));
-    } catch (error) {
-      return { error };
-    } finally {
-      router.push(`/product?scope=${nextScope}`);
-    }
+  const increaseScope = () => {
+    const nextPageIndex = nextScope * 50;
+    dispatch(setPageIndex(nextPageIndex));
+    const firstPageOfScope = nextScope * 10;
+    router.push(`/product?scope=${nextScope}&page=${firstPageOfScope}`);
   };
 
   return (
@@ -64,9 +62,9 @@ function ProductPageList() {
         </li>
         {pageList
           .filter((item, index) => index >= pageScope * 10 && index < pageScope * 10 + 10)
-          .map((item) => (
-            <li key={`page-${item}`} className="page-li">
-              <button onClick={() => changePage(item)}>{item + 1}</button>
+          .map((pageListIndex) => (
+            <li key={`page-${pageListIndex}`} className="page-li">
+              <button onClick={() => changePage(pageListIndex)}>{pageListIndex + 1}</button>
             </li>
           ))}
         <li key={`page-next`} className="page-li">

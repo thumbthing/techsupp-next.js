@@ -7,7 +7,7 @@ require('dotenv').config();
 
 export default function Home() {
   const path = {
-    product: 'product?scope=0&',
+    product: 'product?scope=0&page=0',
     feedback: 'feedback',
   };
 
