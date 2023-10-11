@@ -47,20 +47,22 @@ function ProductPageList() {
     router.push(`/product?scope=${nextScope}`);
   };
 
+  useEffect(() => {}, []);
+
   return (
     <article>
-      <ul className="page-list">
-        <li key={`page-previous`} className="page-button">
+      <ul className="page-ul">
+        <li key={`page-previous`} className="page-li">
           <button onClick={decreaseScope}>이전</button>
         </li>
         {pageList
           .filter((item, index) => index >= pageScope * 10 && index < pageScope * 10 + 10)
           .map((item) => (
-            <li key={`page=${item}`} className="page-button">
+            <li key={`page=${item}`} className="page-li">
               <button onClick={() => changePage(item)}>{item + 1}</button>
             </li>
           ))}
-        <li key={`page-next`} className="page-button">
+        <li key={`page-next`} className="page-li">
           <button onClick={increaseScope}>이후</button>
         </li>
       </ul>

@@ -5,23 +5,17 @@ import React from 'react';
 import styled from 'styled-components';
 import ProductProvider from '../../store/ProductProvider';
 import ProductPageList from '@/components/product/ProductPageList';
+import '../../style/product/productPage.style.css';
 
 function ProductPage() {
   return (
     <ProductProvider>
-      <Main>
+      <main className="main-box">
         <ProductList />
         <ProductPageList />
-      </Main>
+      </main>
     </ProductProvider>
   );
 }
-
-const Main = styled.main`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-`;
 
 export default ProductPage;

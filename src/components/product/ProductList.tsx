@@ -9,6 +9,7 @@ import { getProductListFromDB } from '../../../api/Product/ProductApiService';
 import { getFilteredProductList, getProductList } from '@/store/slices/productSlice';
 import { useRouter } from 'next/router';
 import '../../style/product/productPage.style.css';
+import styled from 'styled-components';
 
 function ProductList() {
   const router = useRouter();
@@ -37,12 +38,12 @@ function ProductList() {
   }, [dispatch, productList]);
 
   return (
-    <article>
-      <ul className="page-list">
+    <article className="product-box">
+      <ul className="product-ul">
         {filteredList
           .filter((product, index) => index >= pageScope && index < pageScope + 5)
           .map((product) => (
-            <li key={product._id} className="page-button">
+            <li key={product._id} className="product-li">
               <ProductItem product={product} />
             </li>
           ))}
