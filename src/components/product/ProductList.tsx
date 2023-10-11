@@ -16,9 +16,8 @@ function ProductList() {
 
   const productList = useSelector((state: RootState) => state.product.productList);
   const filteredList = useSelector((state: RootState) => state.product.filteredProductList);
-  const productScope = useSelector((state: RootState) => state.product.pageScope);
+  const pageScope = useSelector((state: RootState) => state.product.pageScope);
   const pageIndex = useSelector((state: RootState) => state.product.pageIndex);
-  const pageScope = productScope * 50 + pageIndex * 5;
 
   const dispatch = useDispatch();
 
@@ -41,7 +40,7 @@ function ProductList() {
     <article className="product-box">
       <ul className="product-ul">
         {filteredList
-          .filter((product, index) => index >= pageScope && index < pageScope + 5)
+          .filter((product, index) => index >= pageIndex && index < pageIndex + 5)
           .map((product) => (
             <li key={product._id} className="product-li">
               <ProductItem product={product} />

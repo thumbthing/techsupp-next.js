@@ -14,7 +14,6 @@ function ProductPageList() {
 
   const filteredList = useSelector((state: RootState) => state.product.filteredProductList);
   const pageList = useSelector((state: RootState) => state.product.pageList);
-  const pageIndex = useSelector((state: RootState) => state.product.pageIndex);
   const pageScope = useSelector((state: RootState) => state.product.pageScope);
 
   const prevScope = pageScope - 1 >= 0 ? pageScope - 1 : 0;
@@ -36,18 +35,26 @@ function ProductPageList() {
   }, [filteredList, dispatch, router]);
 
   const changePage = (pageNumber: number) => {
-    dispatch(setPageIndex(pageNumber));
+    const index = pageNumber * 5;
+    dispatch(setPageIndex(index));
   };
 
   const decreaseScope = () => {
+    const prevPageIndex = prevScope * 50;
+    dispatch(setPageIndex(prevPageIndex));
     router.push(`/product?scope=${prevScope}`);
   };
 
-  const increaseScope = () => {
-    router.push(`/product?scope=${nextScope}`);
+  const increaseScope = async () => {
+    try {
+      const nextPageIndex = nextScope * 50;
+      dispatch(setPageIndex(nextPageIndex));
+    } catch (error) {
+      return { error };
+    } finally {
+      router.push(`/product?scope=${nextScope}`);
+    }
   };
-
-  useEffect(() => {}, []);
 
   return (
     <article>
@@ -58,7 +65,7 @@ function ProductPageList() {
         {pageList
           .filter((item, index) => index >= pageScope * 10 && index < pageScope * 10 + 10)
           .map((item) => (
-            <li key={`page=${item}`} className="page-li">
+            <li key={`page-${item}`} className="page-li">
               <button onClick={() => changePage(item)}>{item + 1}</button>
             </li>
           ))}
