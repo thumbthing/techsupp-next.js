@@ -5,6 +5,8 @@
   flex-direction: column;
 }
 
+/* item 리스트 스타일 */
+
 .product-box {
   display: flex;
   justify-content: center;
@@ -23,6 +25,8 @@
   float: left;
 }
 
+/* page 리스트 스타일 */
+
 .page-ul {
   display: flex;
   flex-direction: row;
@@ -32,4 +36,38 @@
 .page-li {
   list-style: none;
   float: left;
+}
+
+/* search bar 스타일 */
+
+.search-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.search-ul {
+  display: flex;
+  flex-direction: row;
+  list-style: none;
+}
+
+.search-category-li {
+  list-style: none;
+  float: left;
+}
+
+.search-asc-desc-li {
+  list-style: none;
+  float: left;
+}
+
+.search-input-li {
+  list-style: none;
+  float: left;
+}
+
+.search-input-box {
+  display: flex;
+  flex-direction: column;
 }
