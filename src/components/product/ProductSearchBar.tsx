@@ -1,79 +1,88 @@
 'use client';
 
 import { RootState } from '@/store/productStore';
-import { getFilteredProductList } from '@/store/slices/productSlice';
+import { getFilteredProductList, setOrderDirection, setPageIndex, setPageScope } from '@/store/slices/productSlice';
 import ProductType from '@/types/product.type';
-import { sortByDate, sortById, sortByName, sortByPrice } from '@/util/product/filterProductList';
-import React, { ChangeEvent, useCallback, useState } from 'react';
+import getRetrievedList from '@/util/product/getRetrievedList';
+import { useRouter } from 'next/router';
+import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 interface sortKeywordProps {
   keyword: filterKeyword;
-  sortProcess: (
-    productList: ProductType[],
-    filteredList: ProductType[],
-    searchKeyword: string,
-    sortRule: string,
-    isChecked: boolean,
-  ) => ProductType[] | undefined;
 }
 
-const sortKeyword: sortKeywordProps[] = [
+const sortKey: sortKeywordProps[] = [
+  {
+    keyword: '',
+  },
   {
     keyword: 'name',
-    sortProcess: sortByName,
   },
   {
     keyword: 'price',
-    sortProcess: sortByPrice,
   },
   {
     keyword: 'date',
-    sortProcess: sortByDate,
-  },
-  {
-    keyword: '',
-    sortProcess: sortById,
   },
 ];
 
-type SortRule = 'ASC' | 'DESC';
 type filterKeyword = 'name' | 'price' | 'date' | '';
+type routerQuery = {
+  scope: string;
+  page: string;
+  order: string;
+};
 
 function ProductSearchBar() {
+  const router = useRouter();
+  const { scope, page, order } = router.query as routerQuery;
+
   const productList = useSelector((state: RootState) => state.product.productList);
   const filteredList = useSelector((state: RootState) => state.product.filteredProductList);
-  const [sortRule, setSortRule] = useState<SortRule>('ASC');
+  const orderDirection = useSelector((state: RootState) => state.product.orderDirection);
+
   const [keyword, setKeyword] = useState<filterKeyword>('');
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [isSearchingInFilteredList, setIsSearchingInFilteredList] = useState<boolean>(false);
 
   const dispatch = useDispatch();
 
-  const handleList = useCallback(
-    (keyword: filterKeyword, rule: SortRule, searchText: string, isChecked: boolean) => {
-      const selectedKeyword = sortKeyword.find((item) => item.keyword === keyword);
+  const sortProductList = useCallback(
+    (keyword: filterKeyword, order: string) => {
+      const selectedKeyword = sortKey.find((item) => item.keyword === keyword);
 
       if (selectedKeyword) {
         setKeyword(selectedKeyword.keyword);
-        const newList = selectedKeyword.sortProcess(productList, filteredList, searchText, rule, isChecked);
+        const newList = getRetrievedList(
+          productList,
+          filteredList,
+          searchTerm,
+          order,
+          isSearchingInFilteredList,
+          selectedKeyword.keyword,
+        );
+
         if (newList !== undefined) {
           dispatch(getFilteredProductList(newList));
         }
       }
     },
-    [productList, filteredList, dispatch],
+    [productList, filteredList, dispatch, isSearchingInFilteredList, searchTerm],
   );
 
-  const handleOrderRule = useCallback(
+  const selectOrderDirection = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
-      const rule = e.currentTarget.textContent;
-      if ((rule === 'ASC' && rule !== sortRule) || (rule === 'DESC' && rule !== sortRule)) {
-        setSortRule(rule);
-        handleList(keyword, rule, searchTerm, isSearchingInFilteredList);
+      const orderValue = e.currentTarget.textContent;
+
+      if (orderValue) {
+        dispatch(setOrderDirection(orderValue));
+        sortProductList(keyword, orderValue);
+
+        router.push(`/product?scope=${scope}&page=${page}&order=${orderValue}`);
       }
     },
-    [keyword, sortRule, searchTerm, isSearchingInFilteredList, handleList],
+    [keyword, sortProductList, dispatch, router, scope, page],
   );
 
   const getSearchedList = useCallback(
@@ -85,10 +94,10 @@ function ProductSearchBar() {
       if (inputElement) {
         const searchTerm = inputElement.value;
         setSearchTerm(searchTerm);
-        handleList(keyword, sortRule, searchTerm, isSearchingInFilteredList);
+        sortProductList(keyword, order);
       }
     },
-    [keyword, sortRule, isSearchingInFilteredList, handleList],
+    [keyword, order, sortProductList],
   );
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -101,21 +110,26 @@ function ProductSearchBar() {
     setIsSearchingInFilteredList(isChecked);
   };
 
+  useEffect(() => {
+    const { page, scope, order } = router.query as routerQuery;
+    dispatch(setOrderDirection(order));
+    dispatch(setPageIndex(Number(page)));
+    dispatch(setPageScope(Number(scope)));
+  }, [dispatch, router]);
+
   return (
     <nav>
       <div className="search-box">
         <ul className="search-ul">
           <li className="search-asc-desc-li">
-            <button onClick={(e) => handleOrderRule(e)}>ASC</button>
+            <button onClick={(e) => selectOrderDirection(e)}>ASC</button>
           </li>
           <li className="search-asc-desc-li">
-            <button onClick={(e) => handleOrderRule(e)}>DESC</button>
+            <button onClick={(e) => selectOrderDirection(e)}>DESC</button>
           </li>
-          {sortKeyword.map((item) => (
+          {sortKey.map((item) => (
             <li className="search-category-li" key={item.keyword}>
-              <button onClick={() => handleList(item.keyword, sortRule, searchTerm, isSearchingInFilteredList)}>
-                {item.keyword !== '' ? item.keyword : `order reset`}
-              </button>
+              <button onClick={() => sortProductList(item.keyword, order)}>{item.keyword}</button>
             </li>
           ))}
           <li className="search-input-li">
