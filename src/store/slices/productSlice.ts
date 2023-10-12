@@ -9,6 +9,7 @@ interface productProps {
   pageIndex: number;
   pageList: number[];
   pageScope: number;
+  orderDirection: string;
 }
 
 const initialState: productProps = {
@@ -18,6 +19,7 @@ const initialState: productProps = {
   pageIndex: 0,
   pageList: [],
   pageScope: 0,
+  orderDirection: 'ASC',
 };
 
 export const productSlice = createSlice({
@@ -51,6 +53,10 @@ export const productSlice = createSlice({
       const scope = action.payload;
       draftState.pageScope = scope;
     },
+    setOrderDirection: (draftState, action: PayloadAction<string>) => {
+      const order = action.payload;
+      draftState.orderDirection = order;
+    },
   },
 });
 
@@ -62,6 +68,7 @@ export const {
   setPageIndex,
   setPageList,
   setPageScope,
+  setOrderDirection,
 } = productSlice.actions;
 
 export default productSlice.reducer;
