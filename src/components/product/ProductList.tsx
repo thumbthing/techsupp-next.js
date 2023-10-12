@@ -25,6 +25,7 @@ function ProductList() {
     const getDataFromDB = async () => {
       try {
         const list: ProductType[] = await getProductListFromDB();
+
         dispatch(getProductList(list));
         dispatch(getFilteredProductList(list));
       } catch (error) {

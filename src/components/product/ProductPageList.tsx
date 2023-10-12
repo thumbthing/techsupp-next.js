@@ -15,6 +15,7 @@ function ProductPageList() {
   const filteredList = useSelector((state: RootState) => state.product.filteredProductList);
   const pageList = useSelector((state: RootState) => state.product.pageList);
   const pageScope = useSelector((state: RootState) => state.product.pageScope);
+  const orderDirection = useSelector((state: RootState) => state.product.orderDirection);
   const pageIndex = useSelector((state: RootState) => state.product.pageIndex);
 
   const prevScope = pageScope - 1 >= 0 ? pageScope - 1 : 0;
@@ -37,21 +38,21 @@ function ProductPageList() {
   }, [filteredList, dispatch, router]);
 
   const changePage = (pageNumber: number) => {
-    router.push(`/product?scope=${pageScope}&page=${pageNumber}`);
+    router.push(`/product?scope=${pageScope}&page=${pageNumber}&order=${orderDirection}`);
   };
 
   const decreaseScope = () => {
     const prevPageIndex = prevScope * 50;
     dispatch(setPageIndex(prevPageIndex));
     const firstPageOfScope = prevScope * 10;
-    router.push(`/product?scope=${prevScope}&page=${firstPageOfScope}`);
+    router.push(`/product?scope=${prevScope}&page=${firstPageOfScope}&order=${orderDirection}`);
   };
 
   const increaseScope = () => {
     const nextPageIndex = nextScope * 50;
     dispatch(setPageIndex(nextPageIndex));
     const firstPageOfScope = nextScope * 10;
-    router.push(`/product?scope=${nextScope}&page=${firstPageOfScope}`);
+    router.push(`/product?scope=${nextScope}&page=${firstPageOfScope}&order=${orderDirection}`);
   };
 
   return (
