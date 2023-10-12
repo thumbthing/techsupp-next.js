@@ -4,7 +4,7 @@ import { RootState } from '@/store/productStore';
 import { getFilteredProductList } from '@/store/slices/productSlice';
 import ProductType from '@/types/product.type';
 import { sortByDate, sortById, sortByName, sortByPrice } from '@/util/product/filterProductList';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { ChangeEvent, useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 interface sortKeywordProps {
@@ -14,6 +14,7 @@ interface sortKeywordProps {
     filteredList: ProductType[],
     searchKeyword: string,
     sortRule: string,
+    isChecked: boolean,
   ) => ProductType[] | undefined;
 }
 
@@ -45,22 +46,23 @@ function ProductSearchBar() {
   const [sortRule, setSortRule] = useState<SortRule>('ASC');
   const [keyword, setKeyword] = useState<filterKeyword>('');
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [isSearchingInFilteredList, setIsSearchingInFilteredList] = useState<boolean>(false);
 
   const dispatch = useDispatch();
 
   const handleList = useCallback(
-    (keyword: filterKeyword, rule: SortRule) => {
+    (keyword: filterKeyword, rule: SortRule, searchText: string, isChecked: boolean) => {
       const selectedKeyword = sortKeyword.find((item) => item.keyword === keyword);
 
       if (selectedKeyword) {
         setKeyword(selectedKeyword.keyword);
-        const newList = selectedKeyword.sortProcess(productList, filteredList, searchTerm, rule);
+        const newList = selectedKeyword.sortProcess(productList, filteredList, searchText, rule, isChecked);
         if (newList !== undefined) {
           dispatch(getFilteredProductList(newList));
         }
       }
     },
-    [productList, filteredList, searchTerm, dispatch],
+    [productList, filteredList, dispatch],
   );
 
   const handleOrderRule = useCallback(
@@ -68,11 +70,36 @@ function ProductSearchBar() {
       const rule = e.currentTarget.textContent;
       if ((rule === 'ASC' && rule !== sortRule) || (rule === 'DESC' && rule !== sortRule)) {
         setSortRule(rule);
-        handleList(keyword, rule);
+        handleList(keyword, rule, searchTerm, isSearchingInFilteredList);
       }
     },
-    [keyword, sortRule, handleList],
+    [keyword, sortRule, searchTerm, isSearchingInFilteredList, handleList],
   );
+
+  const getSearchedList = useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+
+      const inputElement = (e.currentTarget as HTMLFormElement).elements.namedItem('search') as HTMLInputElement | null;
+
+      if (inputElement) {
+        const searchTerm = inputElement.value;
+        setSearchTerm(searchTerm);
+        handleList(keyword, sortRule, searchTerm, isSearchingInFilteredList);
+      }
+    },
+    [keyword, sortRule, isSearchingInFilteredList, handleList],
+  );
+
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const inputText = e.target.value;
+    setSearchTerm(inputText);
+  };
+
+  const handleSearchInSearched = (e: ChangeEvent<HTMLInputElement>) => {
+    const isChecked = e.target.checked;
+    setIsSearchingInFilteredList(isChecked);
+  };
 
   return (
     <nav>
@@ -86,15 +113,26 @@ function ProductSearchBar() {
           </li>
           {sortKeyword.map((item) => (
             <li className="search-category-li" key={item.keyword}>
-              <button onClick={() => handleList(item.keyword, sortRule)}>
-                {item.keyword !== '' ? item.keyword : `reset`}
+              <button onClick={() => handleList(item.keyword, sortRule, searchTerm, isSearchingInFilteredList)}>
+                {item.keyword !== '' ? item.keyword : `order reset`}
               </button>
             </li>
           ))}
           <li className="search-input-li">
-            <div>
-              <input placeholder="Search..."></input>
-            </div>
+            <form onSubmit={(e) => getSearchedList(e)}>
+              <div>
+                <input
+                  type="checkbox"
+                  onChange={(e) => handleSearchInSearched(e)}
+                  checked={isSearchingInFilteredList}
+                />
+                <p>검색 결과 내 재 검색</p>
+              </div>
+              <div>
+                <input type="search" name="search" placeholder="Search..." onChange={(e) => handleInputChange(e)} />
+                <button type="submit">검색</button>
+              </div>
+            </form>
           </li>
         </ul>
       </div>
