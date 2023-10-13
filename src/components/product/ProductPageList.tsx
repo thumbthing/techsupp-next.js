@@ -1,22 +1,23 @@
 'use client';
 
-import { RootState } from '@/store/productStore';
-import { setPageIndex, setPageList, setPageScope } from '@/store/slices/productSlice';
+import { setPageIndex, setPageList, setPageScope } from '@/redux/slices/productSlice';
 import ProductType from '@/types/product.type';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useRouter } from 'next/router';
+import { useSearchParams, useRouter } from 'next/navigation';
 import '../../style/product/productPage.style.css';
+import { GlobalState } from '@/redux/store/globalStore';
 
 function ProductPageList() {
   const dispatch = useDispatch();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const filteredList = useSelector((state: RootState) => state.product.filteredProductList);
-  const pageList = useSelector((state: RootState) => state.product.pageList);
-  const pageScope = useSelector((state: RootState) => state.product.pageScope);
-  const orderDirection = useSelector((state: RootState) => state.product.orderDirection);
-  const pageIndex = useSelector((state: RootState) => state.product.pageIndex);
+  const filteredList = useSelector((state: GlobalState) => state.product.filteredProductList);
+  const pageList = useSelector((state: GlobalState) => state.product.pageList);
+  const pageScope = useSelector((state: GlobalState) => state.product.pageScope);
+  const orderDirection = useSelector((state: GlobalState) => state.product.orderDirection);
+  const pageIndex = useSelector((state: GlobalState) => state.product.pageIndex);
 
   const prevScope = pageScope - 1 >= 0 ? pageScope - 1 : 0;
   const nextScope = pageScope + 1 < Math.ceil(filteredList.length / 50) ? pageScope + 1 : pageScope;
@@ -32,10 +33,15 @@ function ProductPageList() {
     };
 
     const filteredPageList = getPages(filteredList);
-    dispatch(setPageList(filteredPageList));
-    dispatch(setPageIndex(Number(router.query.page)));
-    dispatch(setPageScope(Number(router.query.scope)));
-  }, [filteredList, dispatch, router]);
+    if (searchParams) {
+      const pageIndex = searchParams.get('page');
+      const scope = searchParams.get('scope');
+
+      dispatch(setPageList(filteredPageList));
+      dispatch(setPageIndex(Number(pageIndex)));
+      dispatch(setPageScope(Number(scope)));
+    }
+  }, [filteredList, dispatch, searchParams]);
 
   const changePage = (pageNumber: number) => {
     router.push(`/product?scope=${pageScope}&page=${pageNumber}&order=${orderDirection}`);
