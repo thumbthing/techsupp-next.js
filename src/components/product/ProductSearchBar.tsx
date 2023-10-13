@@ -1,7 +1,6 @@
 'use client';
 
 import { getFilteredProductList, setOrderDirection, setPageIndex, setPageScope } from '@/redux/slices/productSlice';
-import ProductType from '@/types/product.type';
 import getRetrievedList from '@/util/product/getRetrievedList';
 import { useSearchParams, useRouter } from 'next/navigation';
 import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';

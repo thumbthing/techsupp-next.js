@@ -1,23 +1,22 @@
 'use client';
 
-import { RootState } from '@/store/productStore';
 import ProductType from '@/types/product.type';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import ProductItem from './ProductItem';
-import { getProductListFromDB } from '../../../api/Product/ProductApiService';
-import { getFilteredProductList, getProductList } from '@/store/slices/productSlice';
-import { useRouter } from 'next/router';
+import { getProductListFromDB } from '../../../httpservice/Product/ProductApiService';
+import { getFilteredProductList, getProductList } from '@/redux/slices/productSlice';
+import { useRouter } from 'next/navigation';
 import '../../style/product/productPage.style.css';
-import styled from 'styled-components';
+import { GlobalState } from '@/redux/store/globalStore';
 
 function ProductList() {
   const router = useRouter();
 
-  const productList = useSelector((state: RootState) => state.product.productList);
-  const filteredList = useSelector((state: RootState) => state.product.filteredProductList);
-  const pageScope = useSelector((state: RootState) => state.product.pageScope);
-  const pageIndex = useSelector((state: RootState) => state.product.pageIndex);
+  const productList = useSelector((state: GlobalState) => state.product.productList);
+  const filteredList = useSelector((state: GlobalState) => state.product.filteredProductList);
+  const pageScope = useSelector((state: GlobalState) => state.product.pageScope);
+  const pageIndex = useSelector((state: GlobalState) => state.product.pageIndex);
 
   const dispatch = useDispatch();
 
@@ -25,7 +24,6 @@ function ProductList() {
     const getDataFromDB = async () => {
       try {
         const list: ProductType[] = await getProductListFromDB();
-
         dispatch(getProductList(list));
         dispatch(getFilteredProductList(list));
       } catch (error) {
