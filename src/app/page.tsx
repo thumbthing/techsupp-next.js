@@ -1,7 +1,4 @@
-import Image from 'next/image';
-import styles from './page.module.css';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 
 require('dotenv').config();
 
@@ -15,10 +12,10 @@ export default function Home() {
     <main>
       <div>techsupp next js version</div>
       <div>
-        <Link href={path.product}>
+        <Link href="product?scope=0&page=0&order=ASC">
           <button type="button">product</button>
         </Link>
-        <Link href={path.feedback}>
+        <Link href="feedback">
           <button type="button">feedback</button>
         </Link>
       </div>
