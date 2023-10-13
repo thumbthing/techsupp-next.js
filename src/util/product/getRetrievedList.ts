@@ -6,7 +6,7 @@ function getRetrievedList(
   searchText: string,
   orderDirection: string,
   isChecked: boolean,
-  keyword: 'name' | 'price' | 'date' | '',
+  keyword: 'name' | 'price' | 'date' | 'reset search result',
 ) {
   const selectList = (isChecked: boolean, text: string, primaryList: ProductType[], modifiedList: ProductType[]) => {
     if (isChecked) {
@@ -52,7 +52,7 @@ function getRetrievedList(
     return result;
   };
 
-  const selectSortingRule = (key: 'name' | 'price' | 'date' | '') => {
+  const selectSortingRule = (key: 'name' | 'price' | 'date' | 'reset search result') => {
     if (key === 'name') {
       return sortByName;
     }
@@ -62,7 +62,7 @@ function getRetrievedList(
     if (key === 'date') {
       return sortByDate;
     }
-    if (key === '') {
+    if (key === 'reset search result') {
       return sortById;
     }
   };
@@ -70,7 +70,7 @@ function getRetrievedList(
   const getSearchedList = (
     isChecked: boolean,
     text: string,
-    keyword: 'name' | 'price' | 'date' | '',
+    keyword: 'name' | 'price' | 'date' | 'reset search result',
     primaryList: ProductType[],
     modifiedList: ProductType[],
     orderDirection: string,
