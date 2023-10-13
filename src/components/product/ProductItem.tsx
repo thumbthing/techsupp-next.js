@@ -15,16 +15,11 @@ interface ProductItemProps {
 function ProductItem({ product }: ProductItemProps) {
   const { _id, name, category, date, invest_price } = product;
   const productPath = usePathname();
-  const detailPath = `${productPath}/detail`;
+  const detailPath = `${productPath}/detail?name=${name}`;
   const imagePath = productImage(`${category}`);
 
   return (
-    <StyledLink
-      href={{
-        pathname: `${detailPath}/[id]`,
-        query: { id: _id },
-      }}
-    >
+    <StyledLink href={detailPath}>
       <ProductBox>
         <ImageBox>
           <Image src={imagePath} alt={category} width={150} height={150} />
