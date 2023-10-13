@@ -1,48 +1,67 @@
 'use client';
 
-import { RootState } from '@/store/productStore';
-import { getFilteredProductList, setOrderDirection, setPageIndex, setPageScope } from '@/store/slices/productSlice';
+import { getFilteredProductList, setOrderDirection, setPageIndex, setPageScope } from '@/redux/slices/productSlice';
 import ProductType from '@/types/product.type';
 import getRetrievedList from '@/util/product/getRetrievedList';
-import { useRouter } from 'next/router';
+import { useSearchParams, useRouter } from 'next/navigation';
 import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import '../../style/product/productPage.style.css';
+import { GlobalState } from '@/redux/store/globalStore';
 
 interface sortKeywordProps {
   keyword: filterKeyword;
+  order: string;
 }
 
 const sortKey: sortKeywordProps[] = [
   {
-    keyword: '',
+    keyword: 'reset search result',
+    order: 'ASC',
+  },
+  {
+    keyword: 'reset search result',
+    order: 'DESC',
   },
   {
     keyword: 'name',
+    order: 'ASC',
+  },
+  {
+    keyword: 'name',
+    order: 'DESC',
   },
   {
     keyword: 'price',
+    order: 'ASC',
+  },
+  {
+    keyword: 'price',
+    order: 'DESC',
   },
   {
     keyword: 'date',
+    order: 'ASC',
+  },
+  {
+    keyword: 'date',
+    order: 'DESC',
   },
 ];
 
-type filterKeyword = 'name' | 'price' | 'date' | '';
-type routerQuery = {
-  scope: string;
-  page: string;
-  order: string;
-};
+type filterKeyword = 'name' | 'price' | 'date' | 'reset search result';
 
 function ProductSearchBar() {
   const router = useRouter();
-  const { scope, page, order } = router.query as routerQuery;
+  const searchParams = useSearchParams();
 
-  const productList = useSelector((state: RootState) => state.product.productList);
-  const filteredList = useSelector((state: RootState) => state.product.filteredProductList);
-  const orderDirection = useSelector((state: RootState) => state.product.orderDirection);
+  const scope = useSelector((state: GlobalState) => state.product.pageScope);
+  const page = useSelector((state: GlobalState) => state.product.pageIndex);
+  const order = useSelector((state: GlobalState) => state.product.orderDirection);
+  const productList = useSelector((state: GlobalState) => state.product.productList);
+  const filteredList = useSelector((state: GlobalState) => state.product.filteredProductList);
 
-  const [keyword, setKeyword] = useState<filterKeyword>('');
+  const [keyword, setKeyword] = useState<filterKeyword>('reset search result');
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [isSearchingInFilteredList, setIsSearchingInFilteredList] = useState<boolean>(false);
 
@@ -52,7 +71,7 @@ function ProductSearchBar() {
     (keyword: filterKeyword, order: string) => {
       const selectedKeyword = sortKey.find((item) => item.keyword === keyword);
 
-      if (selectedKeyword) {
+      if (selectedKeyword?.keyword) {
         setKeyword(selectedKeyword.keyword);
         const newList = getRetrievedList(
           productList,
@@ -91,7 +110,7 @@ function ProductSearchBar() {
 
       const inputElement = (e.currentTarget as HTMLFormElement).elements.namedItem('search') as HTMLInputElement | null;
 
-      if (inputElement) {
+      if (inputElement && order) {
         const searchTerm = inputElement.value;
         setSearchTerm(searchTerm);
         sortProductList(keyword, order);
@@ -111,11 +130,18 @@ function ProductSearchBar() {
   };
 
   useEffect(() => {
-    const { page, scope, order } = router.query as routerQuery;
-    dispatch(setOrderDirection(order));
-    dispatch(setPageIndex(Number(page)));
-    dispatch(setPageScope(Number(scope)));
-  }, [dispatch, router]);
+    if (searchParams) {
+      const scope = searchParams.get('scope');
+      const page = searchParams.get('page');
+      const order = searchParams.get('order');
+
+      if (scope && page && order) {
+        dispatch(setOrderDirection(String(order)));
+        dispatch(setPageIndex(Number(page)));
+        dispatch(setPageScope(Number(scope)));
+      }
+    }
+  }, [dispatch, searchParams]);
 
   return (
     <nav>
@@ -129,7 +155,9 @@ function ProductSearchBar() {
           </li>
           {sortKey.map((item) => (
             <li className="search-category-li" key={item.keyword}>
-              <button onClick={() => sortProductList(item.keyword, order)}>{item.keyword}</button>
+              <button
+                onClick={() => sortProductList(item.keyword, item.order)}
+              >{`${item.keyword} ${item.order}`}</button>
             </li>
           ))}
           <li className="search-input-li">
