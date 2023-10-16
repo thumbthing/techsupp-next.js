@@ -6,9 +6,12 @@ function useDateParser(date: string) {
   const [parsedDate, setParsedDate] = useState<string>('');
 
   useEffect(() => {
-    const isoDate = new Date(date);
-    const formatedDate = new Intl.DateTimeFormat('ko-KR', options).format(isoDate);
-    setParsedDate(formatedDate);
+    if (date !== '') {
+      const isoDate = new Date(date);
+
+      const formatedDate = new Intl.DateTimeFormat('ko-KR', options).format(isoDate);
+      setParsedDate(formatedDate);
+    }
   }, [date]);
 
   return parsedDate;
