@@ -1,6 +1,6 @@
 'use client';
 
-import { getFilteredProductList, setOrderDirection, setPageIndex, setPageScope } from '@/redux/slices/productSlice';
+import { setFilteredProductList, setOrderDirection, setPageIndex, setPageScope } from '@/redux/slices/productSlice';
 import getRetrievedList from '@/util/product/getRetrievedList';
 import { useSearchParams, useRouter } from 'next/navigation';
 import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
@@ -82,7 +82,7 @@ function ProductSearchBar() {
         );
 
         if (newList !== undefined) {
-          dispatch(getFilteredProductList(newList));
+          dispatch(setFilteredProductList(newList));
         }
       }
     },

@@ -15,7 +15,7 @@ interface ProductItemProps {
 function ProductItem({ product }: ProductItemProps) {
   const { _id, name, category, date, invest_price } = product;
   const productPath = usePathname();
-  const detailPath = `${productPath}/detail?name=${name}`;
+  const detailPath = `${productPath}/detail?name=${_id}`;
   const imagePath = productImage(`${category}`);
 
   return (

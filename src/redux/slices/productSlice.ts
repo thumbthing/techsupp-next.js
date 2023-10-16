@@ -26,15 +26,15 @@ export const productSlice = createSlice({
   name: 'product',
   initialState,
   reducers: {
-    getProductList: (draftState, action: PayloadAction<ProductType[]>) => {
+    setProductList: (draftState, action: PayloadAction<ProductType[]>) => {
       const productList = action.payload;
       draftState.productList = productList;
     },
-    getFilteredProductList: (draftState, action: PayloadAction<ProductType[]>) => {
+    setFilteredProductList: (draftState, action: PayloadAction<ProductType[]>) => {
       const filteredList = action.payload;
       draftState.filteredProductList = filteredList;
     },
-    getSingleProduct: (draftState, action: PayloadAction<ProductType>) => {
+    setSingleProductItem: (draftState, action: PayloadAction<ProductType>) => {
       const singleItem = action.payload;
       draftState.singleProduct = singleItem;
     },
@@ -61,9 +61,9 @@ export const productSlice = createSlice({
 });
 
 export const {
-  getProductList,
-  getFilteredProductList,
-  getSingleProduct,
+  setProductList,
+  setFilteredProductList,
+  setSingleProductItem,
   removeSingleProduct,
   setPageIndex,
   setPageList,
