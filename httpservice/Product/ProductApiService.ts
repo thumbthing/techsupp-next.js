@@ -9,16 +9,23 @@ export const getProductListFromDB = async () => {
 
     return Promise.reject({
       status: 500,
-      message: 'Internal server error',
+      message: 'Internal server error PL',
     });
   }
 };
 
-export const testApi = async () => {
+export const getSingleProductFromDB = async (productId: string) => {
   try {
-    const response = await httpInstance.get('/test');
+    const response = await httpInstance.get(`/product/${productId}`);
+    console.log(response);
+
     return response.data;
   } catch (error) {
     console.error(error);
+
+    return Promise.reject({
+      status: 500,
+      message: 'Internal server error PS',
+    });
   }
 };
