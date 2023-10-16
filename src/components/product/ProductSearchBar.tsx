@@ -152,8 +152,8 @@ function ProductSearchBar() {
           <li className="search-asc-desc-li">
             <button onClick={(e) => selectOrderDirection(e)}>DESC</button>
           </li>
-          {sortKey.map((item) => (
-            <li className="search-category-li" key={item.keyword}>
+          {sortKey.map((item, index) => (
+            <li className="search-category-li" key={`${index}-${item.keyword}`}>
               <button
                 onClick={() => sortProductList(item.keyword, item.order)}
               >{`${item.keyword} ${item.order}`}</button>
