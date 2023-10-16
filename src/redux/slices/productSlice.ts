@@ -4,7 +4,7 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 
 interface productProps {
   productList: ProductType[];
-  singleProduct: ProductType | undefined;
+  singleProduct: ProductType;
   filteredProductList: ProductType[];
   pageIndex: number;
   pageList: number[];
@@ -12,9 +12,20 @@ interface productProps {
   orderDirection: string;
 }
 
+export const singleDefaultProduct = {
+  _id: '',
+  name: 'string',
+  category: 'string',
+  total_invest_price: 0,
+  date: '',
+  information: '',
+  invest_price: 0,
+  isInvesting: true,
+};
+
 const initialState: productProps = {
   productList: [],
-  singleProduct: undefined,
+  singleProduct: singleDefaultProduct,
   filteredProductList: [],
   pageIndex: 0,
   pageList: [],
@@ -39,7 +50,7 @@ export const productSlice = createSlice({
       draftState.singleProduct = singleItem;
     },
     removeSingleProduct: (draftState) => {
-      draftState.singleProduct = undefined;
+      draftState.singleProduct = singleDefaultProduct;
     },
     setPageIndex: (draftState, action: PayloadAction<number>) => {
       const index = action.payload;
