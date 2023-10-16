@@ -7,12 +7,24 @@ const LoadingSearchBar = () => {
     <nav>
       <div className="search-box">
         <ul className="search-ul">
-          <li className="search-asc-desc-li">ASC</li>
-          <li className="search-asc-desc-li">DESC</li>
-          <li className="search-category-li">id</li>
-          <li className="search-category-li">name</li>
-          <li className="search-category-li">price</li>
-          <li className="search-category-li">date</li>
+          <li className="search-asc-desc-li">
+            <button>ASC</button>
+          </li>
+          <li className="search-asc-desc-li">
+            <button>DESC</button>
+          </li>
+          <li className="search-category-li">
+            <button>id</button>
+          </li>
+          <li className="search-category-li">
+            <button>name</button>
+          </li>
+          <li className="search-category-li">
+            <button>price</button>
+          </li>
+          <li className="search-category-li">
+            <button>date</button>
+          </li>
           <li className="search-input-li">
             <form>
               <div>
@@ -44,23 +56,47 @@ const loadingItem = {
 
 const LoadingProductItem = () => {
   return (
-    <article>
+    <article className="product-item-box">
       <div className="product-image-box">
         <Image src={loadingItem.imgPath} alt="" width={150} height={150}></Image>
       </div>
       <div>
         <div>
-          <span>제품명:{loadingItem.name}</span>
+          <span className="item-text">제품명:{loadingItem.name}</span>
           <div>
-            <span>D-day: {loadingItem.date}</span>
-            <span>개인 투자 금액 : {loadingItem.invest_price}</span>
+            <span className="item-text">D-day: {loadingItem.date}</span>
+            <span className="item-text">개인 투자 금액 : {loadingItem.invest_price}</span>
           </div>
           <div>
-            <span>투자율: </span>
+            <span className="item-text">투자율: </span>
             <button>즐겨찾기</button>
           </div>
         </div>
       </div>
+    </article>
+  );
+};
+
+const LoadingPageList = () => {
+  return (
+    <article className="product-box">
+      <ul className="product-ul">
+        <li className="product li">
+          <LoadingProductItem />
+        </li>
+        <li className="product li">
+          <LoadingProductItem />
+        </li>
+        <li className="product li">
+          <LoadingProductItem />
+        </li>
+        <li className="product li">
+          <LoadingProductItem />
+        </li>
+        <li className="product li">
+          <LoadingProductItem />
+        </li>
+      </ul>
     </article>
   );
 };
@@ -85,27 +121,9 @@ const LoadingProductPageList = () => {
 
 function ProductPageLoading() {
   return (
-    <main>
+    <main className="main-box">
       <LoadingSearchBar />
-      <article>
-        <ul>
-          <li>
-            <LoadingProductItem />
-          </li>
-          <li>
-            <LoadingProductItem />
-          </li>
-          <li>
-            <LoadingProductItem />
-          </li>
-          <li>
-            <LoadingProductItem />
-          </li>
-          <li>
-            <LoadingProductItem />
-          </li>
-        </ul>
-      </article>
+      <LoadingPageList />
       <LoadingProductPageList />
     </main>
   );

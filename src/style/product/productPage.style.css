@@ -5,7 +5,7 @@
   flex-direction: column;
 }
 
-/* item 리스트 스타일 */
+/* product 리스트 스타일 */
 
 .product-box {
   display: flex;
@@ -23,6 +23,25 @@
 .product-li {
   list-style: none;
   float: left;
+}
+
+/* product item 스타일링 */
+
+.product-item-box {
+  display: flex;
+  flex-direction: row;
+  border: 2px solid;
+  border-radius: 20px;
+  margin: 3px;
+  width: 50em;
+}
+
+.image-box {
+  margin: 3px;
+}
+
+.item-text {
+  text-decoration: none;
 }
 
 /* page 리스트 스타일 */

@@ -19,7 +19,7 @@ function ProductPage() {
     if (loadingState === true) {
       timer = setTimeout(() => {
         dispatch(setLoadingStatus(loadingState));
-      }, 3000);
+      }, 2000);
     }
     return () => {
       clearTimeout(timer);
