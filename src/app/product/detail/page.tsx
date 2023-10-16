@@ -1,30 +1,67 @@
+'use client';
+
+import useDateParser from '@/hooks/useDateParser';
+import { singleDefaultProduct } from '@/redux/slices/productSlice';
+import { GlobalState } from '@/redux/store/globalStore';
+import ProductType from '@/types/product.type';
 import productImage from '@/util/product/product.image';
 import Image from 'next/image';
-import React from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
+const defaultProduct = singleDefaultProduct;
+const productPagePath = `/product?scope=0&page=0&order=ASC`;
+
 function ProductDetailPage() {
-  const image = productImage('camera');
-  const date = Date();
+  const router = useRouter();
+
+  const singleProduct: ProductType = useSelector((state: GlobalState) => state.product.singleProduct);
+  const { _id, name, category, total_invest_price, date, information, invest_price, isInvesting } = singleProduct;
+
+  const imagePath = productImage(`${category}`);
+
+  const productDate = useDateParser(date);
+
+  const isSingleProductValid = JSON.stringify(singleProduct) === JSON.stringify(defaultProduct);
+
+  if (isSingleProductValid) {
+    router.replace(productPagePath);
+  }
+
   return (
     <Main>
-      <Content>
+      <Content key={_id}>
         <ProductContainer>
           <ImageBox>
-            <Image src={image} alt={'test'} width={400} height={400} />
+            <Image src={imagePath} alt={name} width={400} height={400} />
           </ImageBox>
-          <InformationBox>제품 설명</InformationBox>
+          <InformationBox>
+            <span>제품 설명</span>
+            <div>
+              <span>{information}</span>
+            </div>
+          </InformationBox>
         </ProductContainer>
         <ProductContainer>
           <ContentBox>
             <span>제품명</span>
+            <div>
+              <span>{name}</span>
+            </div>
           </ContentBox>
           <ContentBox>
             <span>투자 마감일</span>
+            <div>
+              <span>{productDate}</span>
+            </div>
           </ContentBox>
           <ContentBox>
-            <span>{date}</span>
             <span>기준 현재 투자율:</span>
+            <div>
+              <span>계산 필요</span>
+            </div>
           </ContentBox>
           <ButtonBox>
             <button>투자하기</button>
